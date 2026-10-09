@@ -56,7 +56,7 @@ const INTERACTIVE_SELECTOR = [
   "summary",
   "[contenteditable='']",
   "[contenteditable='true']",
-  "[data-flippero-no-flip]",
+  "[data-flipzy-no-flip]",
 ].join(",");
 
 interface ActiveFlip extends FlipGeometry {
@@ -555,24 +555,24 @@ export const FlipBook = forwardRef<FlipBookHandle, FlipBookProps>(function FlipB
   return (
     <div
       ref={rootRef}
-      className={className ? `flippero ${className}` : "flippero"}
+      className={className ? `flipzy ${className}` : "flipzy"}
       style={{ position: "relative", width: "100%", overflowX: "clip", ...style }}
       role="region"
       aria-roledescription="flipbook"
       aria-label={ariaLabel}
       tabIndex={keyboard ? 0 : undefined}
       onKeyDown={handleKeyDown}
-      data-flippero=""
+      data-flipzy=""
     >
       <div
-        className="flippero__book"
-        data-flippero-book=""
+        className="flipzy__book"
+        data-flipzy-book=""
         data-mode={viewMode}
         data-state={flip ? flip.phase : "idle"}
         data-spread={shape}
         style={
           {
-            "--flippero-progress": Math.round(progress * 1000) / 1000,
+            "--flipzy-progress": Math.round(progress * 1000) / 1000,
             position: "relative",
             width: "100%",
             maxWidth: naturalWidth,
@@ -591,7 +591,7 @@ export const FlipBook = forwardRef<FlipBookHandle, FlipBookProps>(function FlipB
         onDragStart={(e) => e.preventDefault()}
       >
         <div
-          className="flippero__stage"
+          className="flipzy__stage"
           style={{
             position: "absolute",
             left: 0,
@@ -610,7 +610,7 @@ export const FlipBook = forwardRef<FlipBookHandle, FlipBookProps>(function FlipB
           {blank && <PageView index={-1} layer={blank} width={W} height={H} left={spineX} />}
         </div>
       </div>
-      <div className="flippero__sr" aria-live="polite" aria-atomic="true" style={visuallyHidden}>
+      <div className="flipzy__sr" aria-live="polite" aria-atomic="true" style={visuallyHidden}>
         {pageCount > 0 ? getPageAnnouncement(currentPage, pageCount) : ""}
       </div>
     </div>
@@ -635,11 +635,11 @@ const PageView = memo(function PageView({ index, layer, width, height, left, chi
     height,
     overflow: "hidden",
     boxSizing: "border-box",
-    background: "var(--flippero-page-bg, #fff)",
+    background: "var(--flipzy-page-bg, #fff)",
     transformOrigin: "0 0",
     display: layer ? "block" : "none",
   };
-  let className = "flippero__page";
+  let className = "flipzy__page";
   if (layer) {
     style.transform = toCssMatrix(layer.matrix);
     style.zIndex = layer.zIndex;
@@ -647,15 +647,15 @@ const PageView = memo(function PageView({ index, layer, width, height, left, chi
       style.clipPath = toCssPolygon(layer.clip);
       style.WebkitClipPath = style.clipPath;
     }
-    className += ` flippero__page--${layer.slot} flippero__page--${layer.role}`;
+    className += ` flipzy__page--${layer.slot} flipzy__page--${layer.role}`;
   }
-  if (index < 0) className += " flippero__page--blank";
+  if (index < 0) className += " flipzy__page--blank";
   return (
-    <div className={className} data-flippero-page={index >= 0 ? index : "blank"} style={style}>
+    <div className={className} data-flipzy-page={index >= 0 ? index : "blank"} style={style}>
       {children}
-      {layer?.gutter && <div className="flippero__gutter" aria-hidden="true" style={gutterStyle(layer.gutter)} />}
+      {layer?.gutter && <div className="flipzy__gutter" aria-hidden="true" style={gutterStyle(layer.gutter)} />}
       {layer?.shadow && (
-        <div className="flippero__shadow" aria-hidden="true" style={shadowStyle(layer.shadow, width, height)} />
+        <div className="flipzy__shadow" aria-hidden="true" style={shadowStyle(layer.shadow, width, height)} />
       )}
     </div>
   );
@@ -669,7 +669,7 @@ function gutterStyle(side: "left" | "right"): CSSProperties {
     [side]: 0,
     width: "8%",
     pointerEvents: "none",
-    background: `linear-gradient(to ${side === "left" ? "right" : "left"}, rgba(0,0,0,calc(0.16 * var(--flippero-gutter-strength, 1))), rgba(0,0,0,0))`,
+    background: `linear-gradient(to ${side === "left" ? "right" : "left"}, rgba(0,0,0,calc(0.16 * var(--flipzy-gutter-strength, 1))), rgba(0,0,0,0))`,
   };
 }
 
@@ -685,6 +685,6 @@ function shadowStyle(s: Shadow, width: number, height: number): CSSProperties {
     pointerEvents: "none",
     transformOrigin: "0 0",
     transform: `translate(${r(s.x)}px, ${r(s.y)}px) rotate(${r(s.angle)}rad) translate(0px, ${r(-length / 2)}px)`,
-    background: `linear-gradient(to right, rgba(0,0,0,calc(${r(s.opacity)} * var(--flippero-shadow-strength, 1))), rgba(0,0,0,0))`,
+    background: `linear-gradient(to right, rgba(0,0,0,calc(${r(s.opacity)} * var(--flipzy-shadow-strength, 1))), rgba(0,0,0,0))`,
   };
 }

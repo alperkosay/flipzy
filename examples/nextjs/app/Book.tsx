@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FlipBook, useFlipBook } from "flippero";
+import { FlipBook, useFlipBook } from "flipzy";
 
 const chapters = ["Prologue", "The Harbour", "Night Train", "Letters", "The Garden", "Winter", "Epilogue", "Notes"];
 
@@ -11,12 +11,12 @@ export function Book() {
 
   return (
     <div
-      className={dark ? "flippero-theme-dark" : undefined}
+      className={dark ? "flipzy-theme-dark" : undefined}
       style={{ maxWidth: 960, margin: "0 auto", padding: 24, borderRadius: 16, background: dark ? "#17181b" : "transparent" }}
     >
       <FlipBook width={420} height={580} aria-label="Sample book" {...book.bind}>
         <div style={coverStyle}>
-          <h1 style={{ fontSize: 44, margin: 0 }}>flippero</h1>
+          <h1 style={{ fontSize: 44, margin: 0 }}>flipzy</h1>
           <p style={{ opacity: 0.8 }}>Drag a corner, click a page, or use the arrow keys.</p>
         </div>
         {chapters.map((title, i) => (
@@ -27,7 +27,7 @@ export function Book() {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
               dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
             </p>
-            {i === 1 && <a href="https://www.npmjs.com/package/flippero">Links inside pages still work</a>}
+            {i === 1 && <a href="https://www.npmjs.com/package/flipzy">Links inside pages still work</a>}
           </article>
         ))}
         <div style={coverStyle}>
@@ -35,17 +35,17 @@ export function Book() {
         </div>
       </FlipBook>
 
-      <div className="flippero-controls">
-        <button className="flippero-button" onClick={book.flipPrev} disabled={book.page === 0}>
+      <div className="flipzy-controls">
+        <button className="flipzy-button" onClick={book.flipPrev} disabled={book.page === 0}>
           ← Previous
         </button>
-        <span className="flippero-counter">
+        <span className="flipzy-counter">
           {book.page + 1} / {book.pageCount}
         </span>
-        <button className="flippero-button" onClick={book.flipNext} disabled={book.page >= book.pageCount - 1}>
+        <button className="flipzy-button" onClick={book.flipNext} disabled={book.page >= book.pageCount - 1}>
           Next →
         </button>
-        <button className="flippero-button" onClick={() => setDark((d) => !d)}>
+        <button className="flipzy-button" onClick={() => setDark((d) => !d)}>
           {dark ? "Light" : "Dark"}
         </button>
       </div>

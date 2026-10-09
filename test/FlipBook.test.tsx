@@ -7,9 +7,9 @@ import { FlipBook, type FlipBookHandle } from "../src";
 afterEach(cleanup);
 
 const visiblePages = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll<HTMLElement>("[data-flippero-page]"))
+  Array.from(container.querySelectorAll<HTMLElement>("[data-flipzy-page]"))
     .filter((el) => el.style.display !== "none")
-    .map((el) => el.dataset.flipperoPage);
+    .map((el) => el.dataset.flipzyPage);
 
 const book = (props: Partial<React.ComponentProps<typeof FlipBook>> = {}) => (
   <FlipBook width={200} height={300} mode="double" {...props}>
@@ -101,24 +101,24 @@ describe("FlipBook", () => {
 
   it("exposes class names and data attributes for styling", () => {
     const { container } = render(book({ className: "my-book", startPage: 1 }));
-    const root = container.querySelector(".flippero")!;
+    const root = container.querySelector(".flipzy")!;
     expect(root.classList.contains("my-book")).toBe(true);
-    const bookEl = root.querySelector<HTMLElement>(".flippero__book")!;
+    const bookEl = root.querySelector<HTMLElement>(".flipzy__book")!;
     expect(bookEl.dataset.spread).toBe("full");
-    expect(bookEl.style.getPropertyValue("--flippero-progress")).toBe("0.5");
-    expect(container.querySelector(".flippero__page--left.flippero__page--static")?.textContent).toBe("One");
-    expect(container.querySelector(".flippero__page--right.flippero__page--static")?.textContent).toBe("Two");
+    expect(bookEl.style.getPropertyValue("--flipzy-progress")).toBe("0.5");
+    expect(container.querySelector(".flipzy__page--left.flipzy__page--static")?.textContent).toBe("One");
+    expect(container.querySelector(".flipzy__page--right.flipzy__page--static")?.textContent).toBe("Two");
   });
 
   it("marks the cover spread so the theme can hide the empty half", () => {
     const { container } = render(book());
-    expect(container.querySelector<HTMLElement>(".flippero__book")!.dataset.spread).toBe("cover");
+    expect(container.querySelector<HTMLElement>(".flipzy__book")!.dataset.spread).toBe("cover");
   });
 
   it("lifts a corner on hover without changing state or page", async () => {
     const states: string[] = [];
     const { container } = render(book({ onStateChange: (s) => states.push(s) }));
-    const bookEl = container.querySelector<HTMLElement>(".flippero__book")!;
+    const bookEl = container.querySelector<HTMLElement>(".flipzy__book")!;
     // jsdom has no layout, so client coordinates equal book coordinates: bottom-right corner.
     fireEvent.pointerMove(bookEl, { pointerType: "mouse", clientX: 395, clientY: 295 });
     expect(bookEl.dataset.state).toBe("peek");
@@ -132,11 +132,11 @@ describe("FlipBook", () => {
 
   it("does not peek for touch input or when disabled", () => {
     const { container } = render(book({ hoverPeek: false }));
-    const bookEl = container.querySelector<HTMLElement>(".flippero__book")!;
+    const bookEl = container.querySelector<HTMLElement>(".flipzy__book")!;
     fireEvent.pointerMove(bookEl, { pointerType: "mouse", clientX: 395, clientY: 295 });
     expect(bookEl.dataset.state).toBe("idle");
     cleanup();
-    const touch = render(book()).container.querySelector<HTMLElement>(".flippero__book")!;
+    const touch = render(book()).container.querySelector<HTMLElement>(".flipzy__book")!;
     fireEvent.pointerMove(touch, { pointerType: "touch", clientX: 395, clientY: 295 });
     expect(touch.dataset.state).toBe("idle");
   });

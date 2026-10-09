@@ -1,5 +1,5 @@
 {
-  "name": "flippero",
+  "name": "flipzy",
   "version": "0.1.0",
   "description": "Realistic page-flip (flipbook) component for React and Next.js. Zero runtime dependencies, fully typed.",
   "keywords": [

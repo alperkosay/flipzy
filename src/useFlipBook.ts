@@ -16,12 +16,16 @@ export function useFlipBook() {
   const [pageCount, setPageCount] = useState(0);
   const [state, setState] = useState<FlipBookState>("idle");
 
+  // Runs after every render of the owner: picks up a book that mounted later
+  // (e.g. after data loaded) and page count changes. Equal values do not re-render,
+  // so this settles after at most one extra render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const handle = ref.current;
     if (!handle) return;
     setPage(handle.getCurrentPage());
     setPageCount(handle.getPageCount());
-  }, []);
+  });
 
   const onFlip = useCallback((event: FlipEvent) => {
     setPage(event.page);

@@ -1,5 +1,5 @@
 {
-  "name": "flippero-nextjs-example",
+  "name": "flipzy-nextjs-example",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -7,8 +7,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "flippero": "file:../..",
+    "flipzy": "file:../..",
     "next": "latest",
+    "pdfjs-dist": "^6.4.299",
     "react": "latest",
     "react-dom": "latest"
   },

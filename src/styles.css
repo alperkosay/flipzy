@@ -1,0 +1,236 @@
+/*
+ * flippero — optional theme
+ *
+ *   import "flippero/styles.css";
+ *
+ * The component works without this file. Everything here is driven by custom
+ * properties, so override any of them on :root, on a wrapper, or on the book.
+ * Theme classes (.flippero-theme-dark, .flippero-theme-flat) work on the book
+ * itself or on any ancestor, so a shared wrapper also themes the controls.
+ */
+
+:root {
+  /* Paper */
+  --flippero-paper: #fffdf8;
+  /* Shading toward the page edges */
+  --flippero-page-shade: rgb(60 40 20 / 0.035);
+  --flippero-radius: 4px;
+
+  /* Page stack drawn at the outer edges; it grows on the side holding more pages */
+  --flippero-edge: #e4dccb;
+  --flippero-edge-size: 6px;
+
+  /* Shadows */
+  --flippero-book-shadow: 0 2px 4px rgb(40 30 20 / 0.1), 0 20px 40px -12px rgb(40 30 20 / 0.38);
+  --flippero-shadow-strength: 1;
+  --flippero-gutter-strength: 1;
+
+  /* Focus and controls */
+  --flippero-focus-ring: #4f7bd9;
+  --flippero-control-bg: #ffffff;
+  --flippero-control-fg: #2b2b2b;
+  --flippero-control-border: rgb(0 0 0 / 0.12);
+  --flippero-control-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  --flippero-control-shadow-hover: 0 6px 14px -4px rgb(0 0 0 / 0.18);
+}
+
+/* ---------------------------------------------------------------- Book */
+
+.flippero {
+  /* Built here, not on :root, so a theme on any ancestor changes it. */
+  --flippero-page-bg:
+    linear-gradient(to right, var(--flippero-page-shade), transparent 10%, transparent 90%, var(--flippero-page-shade)),
+    var(--flippero-paper);
+  box-sizing: border-box;
+  /* Room for the page stack and the shadow, which sit outside the pages. */
+  padding: 12px calc(var(--flippero-edge-size) + 10px) 36px;
+}
+
+.flippero:focus {
+  outline: none;
+}
+
+.flippero:focus-visible .flippero__book {
+  outline: 2px solid var(--flippero-focus-ring);
+  outline-offset: calc(var(--flippero-edge-size) + 6px);
+  border-radius: var(--flippero-radius);
+}
+
+.flippero__book {
+  isolation: isolate;
+  cursor: pointer;
+}
+
+.flippero__book[data-state="peek"] {
+  cursor: grab;
+}
+
+.flippero__book[data-state="dragging"] {
+  cursor: grabbing;
+}
+
+.flippero__book[data-state="flipping"] {
+  cursor: progress;
+}
+
+.flippero__book::before,
+.flippero__book::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: var(--flippero-radius);
+  transition:
+    left 0.45s ease,
+    right 0.45s ease;
+}
+
+/* Soft shadow under the pages that are actually there. */
+.flippero__book::before {
+  inset: 0;
+  box-shadow: var(--flippero-book-shadow);
+}
+
+/* Page stack: thin stripes peeking out past the outer edges. */
+.flippero__book::after {
+  top: 2px;
+  bottom: 2px;
+  left: calc(-1 * var(--flippero-edge-size) * var(--flippero-progress, 0));
+  right: calc(-1 * var(--flippero-edge-size) * (1 - var(--flippero-progress, 0)));
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.06), transparent 15%, transparent 85%, rgb(0 0 0 / 0.1)),
+    repeating-linear-gradient(to right, var(--flippero-edge) 0 1px, var(--flippero-paper) 1px 2px);
+  box-shadow: var(--flippero-book-shadow);
+}
+
+/* Closed on the front cover: only the right half holds pages. */
+.flippero__book[data-spread="cover"]::before,
+.flippero__book[data-spread="cover"]::after {
+  left: 50%;
+}
+
+/* Closed on the back cover: only the left half holds pages. */
+.flippero__book[data-spread="back"]::before,
+.flippero__book[data-spread="back"]::after {
+  right: 50%;
+}
+
+.flippero__book[data-mode="single"]::after {
+  left: 0;
+}
+
+/* --------------------------------------------------------------- Pages */
+
+.flippero__page--left {
+  border-radius: var(--flippero-radius) 0 0 var(--flippero-radius);
+}
+
+.flippero__page--right {
+  border-radius: 0 var(--flippero-radius) var(--flippero-radius) 0;
+}
+
+.flippero__book[data-mode="single"] .flippero__page {
+  border-radius: var(--flippero-radius);
+}
+
+/* Images used as whole pages fill them by default. */
+.flippero__page > img:only-child {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ------------------------------------------------------------ Controls */
+
+.flippero-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 4px;
+  color: var(--flippero-control-fg);
+  font: 500 14px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.flippero-button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--flippero-control-border);
+  border-radius: 999px;
+  background: var(--flippero-control-bg);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: var(--flippero-control-shadow);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.flippero-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--flippero-control-shadow-hover);
+}
+
+.flippero-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--flippero-control-shadow);
+}
+
+.flippero-button:focus-visible {
+  outline: 2px solid var(--flippero-focus-ring);
+  outline-offset: 2px;
+}
+
+.flippero-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.flippero-counter {
+  min-width: 76px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+/* -------------------------------------------------------------- Themes */
+
+.flippero-theme-dark {
+  --flippero-paper: #26282d;
+  --flippero-page-shade: rgb(0 0 0 / 0.12);
+  --flippero-edge: #3b3e46;
+  --flippero-book-shadow: 0 2px 4px rgb(0 0 0 / 0.4), 0 22px 44px -10px rgb(0 0 0 / 0.75);
+  --flippero-shadow-strength: 1.5;
+  --flippero-gutter-strength: 1.8;
+  --flippero-focus-ring: #8fb0ff;
+  --flippero-control-bg: #2d3036;
+  --flippero-control-fg: #ecebe8;
+  --flippero-control-border: rgb(255 255 255 / 0.12);
+  --flippero-control-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+  --flippero-control-shadow-hover: 0 6px 14px -4px rgb(0 0 0 / 0.6);
+  color: #e8e6e3;
+}
+
+/* Minimal look: no page stack, no outer shadow. */
+.flippero-theme-flat {
+  --flippero-edge-size: 0px;
+  --flippero-book-shadow: none;
+  --flippero-radius: 0px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flippero__book::before,
+  .flippero__book::after,
+  .flippero-button {
+    transition: none;
+  }
+}
